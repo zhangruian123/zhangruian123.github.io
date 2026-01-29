@@ -19,16 +19,16 @@
   <meta name="author" content="zhangruian123">
   <meta name="keywords" content="">
   
-    <meta name="description" content="第一次参加科研项目，具体工作有复现论文Marschner Scattering ，Opacity Shadow Maps ，Deep Opacity Maps，Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks 等。 总之诚挚地感谢老师们和学长们的帮助，让我能够参与其中，还能做">
+    <meta name="description" content="这是我第一次参加科研项目，具体工作有复现论文Marschner Scattering ，Opacity Shadow Maps ，Deep Opacity Maps，Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks 等等。 在开始之前先诚挚地感谢老师们和学长们的帮助，让我能够">
 <meta property="og:type" content="article">
 <meta property="og:title" content="头发渲染项目参与情况">
 <meta property="og:url" content="https://zhangruian123.github.io/2026/01/30/First-Hair-Renderingproject/index.html">
 <meta property="og:site_name" content="Ryan&#39;s Tech Blog">
-<meta property="og:description" content="第一次参加科研项目，具体工作有复现论文Marschner Scattering ，Opacity Shadow Maps ，Deep Opacity Maps，Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks 等。 总之诚挚地感谢老师们和学长们的帮助，让我能够参与其中，还能做">
+<meta property="og:description" content="这是我第一次参加科研项目，具体工作有复现论文Marschner Scattering ，Opacity Shadow Maps ，Deep Opacity Maps，Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks 等等。 在开始之前先诚挚地感谢老师们和学长们的帮助，让我能够">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zhangruian123.github.io/img/hair.png">
 <meta property="article:published_time" content="2026-01-29T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-01-29T16:17:29.342Z">
+<meta property="article:modified_time" content="2026-01-29T17:06:21.649Z">
 <meta property="article:author" content="zhangruian123">
 <meta property="article:tag" content="Graphics">
 <meta property="article:tag" content="Rendering">
@@ -230,7 +230,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          69 字
+          453 字
         
       </span>
     
@@ -241,7 +241,7 @@
         
         
         
-          1 分钟
+          4 分钟
         
       </span>
     
@@ -283,9 +283,40 @@
             
               <div class="markdown-body">
                 
-                <p>第一次参加科研项目，具体工作有复现论文<strong>Marschner Scattering</strong> ，<strong>Opacity Shadow Maps</strong> ，<strong>Deep Opacity Maps</strong>，<strong>Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks</strong> 等。</p>
-<p>总之诚挚地感谢老师们和学长们的帮助，让我能够参与其中，还能做一些事，太感动了！</p>
-<p>具体细节后面再补充……</p>
+                <p>这是我第一次参加科研项目，具体工作有复现论文<strong>Marschner Scattering</strong> ，<strong>Opacity Shadow Maps</strong> ，<strong>Deep Opacity Maps</strong>，<strong>Deep Scattering: Rendering Atmospheric Clouds with Radiance-Predicting Neural Networks</strong> 等等。</p>
+<p>在开始之前先诚挚地感谢老师们和学长们的帮助，让我能够参与其中，还能做一些事，谢谢你们！</p>
+<h1 id="Marschner-Scattering"><a href="#Marschner-Scattering" class="headerlink" title="Marschner Scattering"></a>Marschner Scattering</h1><img src=/img/hair-rendering/RTTTRT.png>
+
+
+
+<p>Marschner Scattering在原本kaijiya-key的模型基础上进行改进，将头发建模成覆盖有倾斜鳞片的圆柱体，光线打在头发上时会有三种不同的表现，反射（R），折射-折射（TT），折射-反射-折射（TRT），最后的实现效果是要将三种情况加在一起，公式为<br>$$<br>S &#x3D; S_R+S_{TT}+S_{TRT}<br>$$</p>
+<p>其中光线的计算可以分为：</p>
+<p>M纵向反射函数：光在长度方向（纵向）的分布（由毛鳞片决定位置）。</p>
+<p>N方位角散射函数：光在截面方向（横向）的分布（由折射反射决定强弱）。</p>
+<p>所以，计算公式又可写为：</p>
+<p>$$<br>S &#x3D; \sum_{p \in {R, TT, TRT}} \frac{M_p(\theta_h) \cdot N_p(\phi)}{\cos^2 \theta_d}<br>$$</p>
+<p>其中，$ \cos^2 \theta_d $ 是强度修正器。因为头发是圆柱体，光线越倾斜，反射光锥越窄，能量越集中，需要除以$\cos \theta_d$；而在另一方面坐标投影,积分过程也需要$\cos \theta_d$来进行修正。</p>
+<img src=/img/hair-rendering/jiaodu.png>
+
+
+
+<p>其中的角度设置：</p>
+<p>1.坐标轴 (u, v, w)</p>
+<p>​	u 轴（切线方向）</p>
+<p>​	v轴和w轴（法平面）</p>
+<p>​	v轴通常指代长轴，w 轴指代短轴</p>
+<p>2.向量</p>
+<p>​	$ω_i$： 入射光方向（指向光源）</p>
+<p>​	$ω_r$： 出射光方向（指向摄像机&#x2F;眼睛）</p>
+<p>3.θ：倾斜角</p>
+<p>​	$θ_i$：入射光的倾斜角。</p>
+<p>​	$θ_r$：出射光的倾斜角。</p>
+<p>​	$θ_d$&#x3D;($θ_r$-$θ_i$ )&#x2F;2</p>
+<p>​	$θ_h$&#x3D;($θ_i$+$θ_r$ )&#x2F;2</p>
+<p>4.ϕ：方位角</p>
+<p>​	$ϕ_i$：入射光在截面上的角度。_</p>
+<p>​	$ϕ_r$：出射光在截面上的角度。</p>
+<p>更多具体细节后面再补充……</p>
 
                 
               </div>
@@ -298,9 +329,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
-      
         <a href="/tags/Graphics/" class="print-no-link">#Graphics</a>
+      
+        <a href="/tags/Rendering/" class="print-no-link">#Rendering</a>
       
     </div>
   

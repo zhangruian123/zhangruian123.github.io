@@ -5,7 +5,7 @@
     '/img/caster.jpeg',
     '/img/babieta.png',
     '/img/hetu.jpg',
-    '/img/shiziwang.png',
+    '/img/sakazidewuzhongqiyu.png',
     '/img/M3.png',
     '/img/honglongzilong.png'
   ];
@@ -49,6 +49,6 @@
           nextLayer.style.opacity = '0';
         }, 1500); // 这里的时长要和 transition 的 1.5s 一致
       };
-    }, 5000);
+    }, 2500);
   }
 })();
