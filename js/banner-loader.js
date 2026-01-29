@@ -1,7 +1,10 @@
 (function() {
+
   const images = [
     '/img/cibeidengta.jpg',
+    '/img/caster.jpeg',
     '/img/babieta.png',
+    '/img/hetu.jpg',
     '/img/shiziwang.png',
     '/img/M3.png',
     '/img/honglongzilong.png'
