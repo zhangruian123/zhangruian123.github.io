@@ -1,0 +1,12 @@
+#banner {
+  position: relative;
+  overflow: hidden;
+  background-color: #000; /* 防止加载时的白光 */
+  z-index: 1;
+}
+
+/* 确保标题文字始终在最上层 */
+.header-inner {
+  position: relative;
+  z-index: 2;
+}
